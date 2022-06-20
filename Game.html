@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<style>
+			pre {
+				position:fixed;
+				display:inline;
+				cursor:pointer;
+			}
+			#inventorydisp {
+				position:fixed;
+				display:inline;
+				font-family:monospace;
+			}
+			#popup-screen {
+				display:none;
+				position:fixed;
+				top:0px;
+				left:0px;
+				width:100%;
+				height:100%;
+				background:rgba(150, 150, 150, 0.6);
+				z-index:1;
+			}
+			#popup {
+				display:block;
+				position:relative;
+				text-align:center;
+				max-width:300px;
+				top:40%;
+				left:40%;
+				border:1px solid black;
+				background:white;
+			}
+			#popup-html {
+				padding-left:10px;
+				padding-right:10px;
+			}
+			#popup input {
+				border-radius:0px;
+				border:1px solid black;
+				outline:none;
+			}
+			#invent {
+				text-decoration:underline;
+				color:rgb(0, 0, 255);
+			}
+			#cloudI {
+				top:100px;
+				left:350px;
+				cursor:auto;
+			}
+			#cloudII {
+				top:100px;
+				left:525px;
+			}
+			#cloudIII {
+				top:75px;
+				left:650px;
+				cursor:auto;
+			}
+			#house {
+				top:210px;
+				left:150px;
+			}
+			#garage {
+				top:270px;
+				left:102px;
+			}
+			#shop {
+				top:240px;
+				left:250px;
+			}
+			#shop_1 {
+				top:240px;
+				left:350px;
+			}
+			#restaurant {
+				top:255px;
+				left:500px;
+			}
+			#tower {
+				top:165px;
+				left:550px;
+			}
+			#ground {
+				top:300px;
+				left:0px;
+				cursor:auto;
+			}
+			#caves {
+				top:312px;
+				left:150px;
+				cursor:auto;
+			}
+			#barrels {
+				top:371px;
+				left:199px;
+			}
+			#groundII {
+				top:200px;
+				left:0px;
+				cursor:auto;
+			}
+			#houseII {
+				top:230px;
+				left:100px;
+			}
+			#mine {
+				top:290px;
+				left:450px;
+			}
+			#mountain {
+				left:50px;
+				cursor:auto;
+			}
+			#cabin {
+				top:220px;
+				left:490px;
+			}
+			#garageII {
+				top:235px;
+				left:445px;
+			}
+			#fuelpump {
+				top:205px;
+				left:615px;
+			}
+			#room {
+				top:150px;
+				left:325px;
+				cursor:auto;
+			}
+			#machine {
+				top:360px;
+				left:550px;
+			}
+			#passage {
+				top:150px;
+				left:0px;
+			}
+			#moneydisp {
+				top:20px;
+			}
+			#read {
+				display:none;
+			}
+			#r-owned {
+				position:inherit;
+				visibility:hidden;
+			}
+			#t-owned {
+				visibility:hidden;
+			}
+			#hbar {
+				background-color:black;
+				height:10px;
+			}
+			#hbar2 {
+				background-color:rgba(0, 0, 0, 0);
+				height:8px;
+				border:1px solid black;
+				width:250px;
+			}
+			#ebar {
+				background:black;
+				height:10px;
+			}
+			#ebar2 {
+				background-color:rgba(0, 0, 0, 0);
+				height:8px;
+				border:1px solid black;
+				width:250px;
+			}
+			#diekiller {
+				color:red;
+				font-size:50px;
+				font-family:monospace;
+				position:fixed;
+				align:center;
+				top:50%;
+				left:50%;
+			}
+			.hidden {
+				display:none;
+			}
+			*::selection {
+				background:white;
+				color:black;
+			}
+		</style>
+	</head>
+	<body>
+		<div id = "inventorydisp">
+			<span id = "invent">Hide Inventory</span><br>
+			<span id = "idisp"></span><br>
+			Hunger: <div id = "hbar" style = "display:inline-block;"></div><div id = "hbar2" style = "display:inline-block;"></div><br>
+			Energy: <div id = "ebar" style = "display:inline-block;"></div><div id = "ebar2" style = "display:inline-block;"></div>
+		</div>
+		<div id = "home">
+			<pre id = "cloudI">
+   ___
+  (    )__
+(   _)_    )
+</pre>
+			<pre id = "cloudII">
+    _______
+   (  __   )__
+ (__     )     )_
+(______    )      )
+</pre>
+			<pre id = "cloudIII">
+  (__)
+(_)____)
+</pre>
+			<pre id = "ground">
+_______________________________________________________________________________________________________________________________________________________________________________________________
+</pre>
+			<pre id = "caves" class = "hidden">
+   _________________           _____________________/  _|
+  /                 \_________/           V          _|
+ /                        V                        _|
+|                                                _|
+|____                                          _|
+     |___________A________________A___________|
+</pre>
+			<pre id = "barrels" class = "hidden">
+ _   _   _
+(_) (_) (_)
+</pre>
+			<pre id = "garage" class = "hidden">
+ _____
+|  __ 
+| |  |
+</pre>
+			<pre id = "house" title = "You live here.">
+ OWNED
+    ~
+   ~	
+ _u__
+/    \
+|    |
+| [] |
+</pre>
+			<pre id = "shop" title = "You can sell records here.">
+ OWNED
+ ____
+/    \
+|SHOP|
+| [] |
+</pre>
+			<pre id = "shop_1" class = "hidden" title = "This is a large multi-purpouse store, being repaired." active = "no">
+ ____
+|    \    ___
+|     \__/   |
+|    ___     |
+|   [   ]    |
+</pre>
+			<pre id = "restaurant" owned = "no" class = "hidden" title = "You can eat food here.">
+<span id = "r-owned"> OWNED</span>
+ ____
+/    \
+| [] |
+</pre>
+			<pre id = "tower" owned = "no" class = "hidden" title = "A tower with a clock.">
+<span id = "t-owned">  OWNED</span>
+    |::>
+    |
+   / \
+  |   |
+  | <span id = "clock">O</span> |
+  |   |
+  |   |
+  |   |
+  | H |
+</pre>
+		</div>
+		<div id = "wastes">
+			<pre id = "groundII">
+
+
+                                                                 _....______________________________________________________________________________
+                                                             _--'                                                                                   '
+                                                          __/                                                                                        \
+                                                        _/                                                                                            \
+                                                       /                                                                                               \
+______________________________________________________/_________________________________________________________________________________________________\_____________
+</pre>
+			<pre id = "houseII">
+     ______
+    /      \
+ __/_       \
+/    \      |
+|    |      |
+| [] |  []  |
+</pre>
+			<pre id = "mine">
+ _
+| |
+</pre>
+		</div>
+		<div id = "slopes">
+			<pre id = "mountain">
+
+ 
+                                                                                                        .....--------------------------------------------.....-..............-----------------................----------------------------------------------------------------------------------------------------------------------------------------------------------
+                                                                                                    ../
+                                                                                                 ./
+                                                                                               /
+                                                                                             /
+                                                                                            /
+                                                                                           /
+                                                                                          /
+                                                                                         /
+                                                                                        /
+                                                                                       /
+                                                                                      /
+                                                                                    _/
+                                                                             _____/
+                                                                          _/
+                                                         ________________/
+                                                       /
+                                                      /
+                                                    _/
+                                             _____/
+___________________________________________/
+</pre>
+			<pre id = "fuelpump" class = "hidden">
+ .---.
+| (=+ |
+|O==+
+</pre>
+			<pre id = "garageII">
+ _____
+(=====
+(=| |=
+</pre>
+			<pre id = "cabin" owned = "no">
+   ______
+ /========\
+(==========)
+(====[]====)
+<pre>
+		</div>
+		<div id = "rocket">
+		    <pre id = "passage">
+  _________________________________________
+|_________________________________________
+</pre>
+			<pre id = "room">
+  _____________________________________________________________________________________
+ __                                                                                       |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+   |                                                                                      |
+  _|_                                                                                     |
+ |                                                                                        |
+ |__________________________________________________________________________________________
+</pre>
+			<pre id = "machine">
+      |      
+      |      
+     :A:     
+    .   .    
+   :     :   
+  .   O   .  
+  |:. O . |  
+  |:. O . |  
+  |::[_]  |  
+  |'.---.'|  
+ / /     \ \ 
+'.'_______'.'
+</pre>
+		</div>
+		<div id = "launch"></div>
+		<div id = "killer">
+			<div id = "diekiller">!YOU!<br>!ARE!<br>!DEAD!</div>
+		</div>
+		<div id = "popup-screen">
+			<div id = "popup">
+				<hr style = "visibility:hidden;">
+				<hr style = "visibility:hidden;">
+				<div id = "popup-html">T1</div>
+				<hr style = "visibility:hidden;">
+				<input type = "text" id = "read">
+				<hr style = "visibility:hidden;">
+				<hr>
+				<input type = "button" value = "B1" id = "button_1">
+				<input type = "button" value = "B2" id = "button_2">
+				<hr style = "visibility:hidden;">
+			</div>
+		</div>
+		<script>
+			var readinp = "";
+			var scene = "home";
+			var scenes = [
+				"home",
+				"wastes",
+				"slopes",
+				"rocket",
+				"launch",
+				"killer"
+			];
+			var messageRunning = false;
+			var timer = 0;
+			var hour = 0;
+			var cloudFallen = false;
+			var cavesFound = false;
+			//functions:
+			function byId(el){
+				return document.getElementById(el);
+			};
+			function show(el){
+				el.style.display = "initial";
+			};
+			function hide(el){
+				el.style.display = "none";
+			};
+			function waitUntil(condition, callback) {
+				if(!condition) {
+					window.setTimeout(waitUntil.bind(null, condition, callback), 100);
+				} else {
+					callback();
+				}
+			};
+			function message(ptext, button1 = null, button2 = null, button1ev = function(){hide(byId("popup-screen"));}, button2ev = function(){hide(byId("popup-screen"));}, isRead = false){
+				messageRunning = true;
+				byId("popup-html").innerHTML = ptext;
+				show(byId("popup-screen"));
+				if(!isRead){
+					hide(byId("read"));
+				}else{
+					show(byId("read"));
+				}
+				hide(byId("button_1"));
+				hide(byId("button_2"));
+				if(button1 !== null){
+					show(byId("button_1"));
+					byId("button_1").value = button1;
+					byId("button_1").onclick = button1ev;
+				}
+				if(button2 !== null){
+					show(byId("button_2"));
+					byId("button_2").value = button2;
+					byId("button_2").onclick = button2ev;
+				}
+			};
+			function read(rtext, place, xClicks){
+				byId("read").value = "";
+				byId("read").placeholder = place;
+				message(rtext, "OK", "Cancel", function(){
+					var input = byId("read");
+					readinp = input.value;
+					entered = true;
+					hide(byId("popup-screen"));
+					for(var z in xClicks){
+						byId(xClicks[z]).click();
+					}
+				}, function(){hide(byId("popup-screen"));}, true);
+			};
+			//vars
+			var house = byId("house");
+			var shop = byId("shop");
+			var inlink = byId("invent");
+			var mul = byId("shop_1");
+			var restaurant = byId("restaurant");
+			var tower = byId("tower");
+			var caves = byId("caves");
+			var barrels = byId("barrels");
+			var garage = byId("garage");
+			var houseII = byId("houseII");
+			var mine = byId("mine");
+			var cabin = byId("cabin");
+			var garageII = byId("garageII");
+			var pump = byId("fuelpump");
+			var machine = byId("machine");
+			var energy = 50;
+			var hunger = 0;
+			var barrelFuel = 200;
+			var codenum = Math.round(Math.random()*1000);
+			var eventNum = 50;
+			var interiormade = false;
+			var eventsOn = false;
+			var wastesFound = false;
+			var recordcol = false;
+			var clockBroken = false;
+			var carHad = false;
+			var newsRead = false;
+			var rocketfound = false;
+			var inmessage = false;
+			var rocketRepairs = {
+				metal: 200,
+				fuel: 1000,
+				air_tanks: 500,
+				electrical_parts: 50
+			};
+			var items = [
+				{
+				//0
+					name: "Money",
+					quantity: 0
+				},
+				{
+				//1
+					name: "Food",
+					quantity: 5
+				},
+				{
+				//2
+					name: "Records",
+					quantity: 5
+				},
+				{
+				//3
+					name: "Vinyl",
+					quantity: 0
+				},
+				{
+				//4
+					name: "Master Tapes",
+					quantity: 0
+				},
+				{
+				//5
+					name: "Fuel",
+					quantity: 0
+				},
+				{
+				//6
+					name: "Cloth",
+					quantity: 0
+				},
+				{
+				//7
+					name: "Metal",
+					quantity: 0
+				},
+				{
+				//8
+					name: "Air Tanks",
+					quantity: 0
+				},
+				{
+				//9
+					name: "Electrical Parts",
+					quantity: 0
+				},
+			];
+			function buy(thingId, amount, cost, xClicks = []){
+				if(items[0].quantity >= cost){
+					items[thingId].quantity += amount;
+					items[0].quantity -= cost;
+					message("You bought "+amount+" "+items[thingId].name+".", "Ok", null, function(){
+						hide(byId("popup-screen"));
+						for(var z in xClicks){
+							byId(xClicks[z]).click();
+						}
+					});
+				}else{
+					message("You don't have enough money.", "Ok", null, function(){
+						hide(byId("popup-screen"));
+						for(var z in xClicks){
+							byId(xClicks[z]).click();
+						}
+					});
+				}
+			};
+			var doEvent = function(){
+				var eNum = Math.round(Math.random()*5);
+				switch(eNum){
+					case 0:
+						message("An old man knocks on the door of your shop. He wants to buy all your records!", "Let him buy.", "\"No\"", function(){
+							items[0].quantity += (items[2].quantity*15)+100;
+							items[2].quantity = 0;
+							hide(byId("popup-screen"));
+						});
+					break;
+					case 1:
+						if(items[1].quantity >= 50){
+							message("A fat person comes to the restaurant. He wants to pay for food with clothes instead of money.", "Let him", "Nope", function(){
+								items[6].quantity += items[1].quantity*50;
+								items[1].quantity = 0;
+								message("The fat man gives you a huge grin, and leaves behind a huge bundle of clothes.", "\"Take them back, they smell horrible!\"", "Take the clothes", function(){
+									message("The fat man simply smiles. \"Too late!\", he shouts as he leaves.", "Grrrr...");
+								});
+							}, function(){
+								items[0].quantity += items[1].quantity*50;
+								items[1].quantity = 0;
+								message("The fat man frowns, but accepts. You think he's paid you way too much.", "Oh well.");
+							});
+						}else{
+							message("A fat person comes to the restaurant. He orders food, but claims he doesn't get enough.", "\"Pay now\"", "\"If you don't like the food, go somewhere else\"", function(){
+								message("The man says \"I'll -- I'll start a riot!\" Nobody budges. You push the fat man out of the shop (with the help of some customers).", "That's settled.");
+								items[0].quantity += 1000;
+							}, function(){
+								message("The man sulks out of the shop.", "That's settled");
+							});
+						}
+					break;
+					case 2:
+						if(newsRead){
+							message("The clock in the tower breaks!", "Uh-oh!");
+							clockBroken = true;
+						}else{
+							message("The clock has a small error.", "Fix it");
+						}
+					break;
+				};
+				eventNum = 1500;
+			};
+			function eat(cost, nutrients, xClicks = [], mtxt = "Yum, yum", btxt = "Yum, yum"){
+				if(items[0].quantity >= cost){
+					items[0].quantity -= cost;
+					hunger -= nutrients;
+					if(hunger < 0){
+						hunger = 0;
+					}
+					message(mtxt, btxt, null, function(){
+						hide(byId("popup-screen"));
+						for(var z in xClicks){
+							byId(xClicks[z]).click();
+						}
+					});
+				}else{
+					message("You don't have enough money.", "Too bad", null, function(){
+						hide(byId("popup-screen"));
+						for(var z in xClicks){
+							byId(xClicks[z]).click();
+						}
+					});
+				}
+			};
+			//events
+			house.addEventListener("click", function(){
+				if(!recordcol){
+					message("You are in your house.", "Leave the house", "Collect records", function(){
+						hide(byId("popup-screen"));
+					}, function(){
+						message("You collect records.", "Leave the house");
+						recordcol = true;
+						items[2].quantity += 10;
+						energy -= 10;
+						hunger ++;
+				});
+				}else if(energy <= 4){
+					message("You are in your house. It is getting close to bed-time.", "Sleep", "Leave the house", function(){
+						message("You have a refreshing sleep.", "Leave the house");
+						hunger += (10-energy);
+						byId("hbar").style.width = hunger*25+"px";
+						byId("hbar2").style.width = (10-hunger)*25+"px";
+						byId("ebar").style.width = energy*5+"px";
+						byId("ebar2").style.width = (50-energy)*5+"px";
+						energy = 50;
+						if(!garage.classList.contains("hidden")){
+							if(!newsRead){
+								message("Your newspaper arrives for the first time. Something catches your attention: Scribbled in pen is \""+codenum+"\".", "Ok");
+								newsRead = true;
+							}else{
+								message("Your newspaper arrives, but there is nothing special about it.", "Ok");
+							}
+						}
+					});
+				}else if(hunger >= 8 && items[1].quantity !== 0){
+					message("You are in your house, and hungry too!", "Eat food", "Leave without eating", function(){
+						read("OK, how much food will you eat?", "How much?", ["house", "button_1"]);
+						waitUntil(readinp !== "", function(){
+							var food = parseInt(readinp);
+							if(food >= 0){
+								if(items[1].quantity >= food){
+									message("Yum, yum", "Yum, yum");
+									eat(0, food, ["house"]);
+									items[1].quantity -= food;
+								}else{
+									message("You don't have that much food.", "Re-enter");
+								}
+							}else{
+								message("You barfed up food!", "Clean up the mess" , null, function(){
+									message("Ewww...", "Yuck");
+									energy --;
+								});
+							}
+							readinp = "";
+						});
+					});
+				}else{
+					message("You are in your house.", "Make records", "Leave the house", function(){
+						read("How many records will you make? To make a record, you use 2 vinyl and 1 master tape.", "How many?", ["house", "button_1"]);
+						waitUntil(readinp !== "", function(){
+							var rec = parseInt(readinp);
+							if(rec >= 0){
+								if(items[3].quantity >= (rec*2)){
+									if(items[4].quantity >= rec){
+										if(rec === 1){
+											message("You made a record.", "Ok");
+										}else{
+											message("You made "+rec+" records.", "Ok");
+										}
+										items[2].quantity += rec;
+										items[3].quantity -= rec*2;
+										items[4].quantity -= rec;
+										energy -= 10;
+										hunger += 2;
+									}else{
+										message("You don't have enough tapes.", "Ok");
+									}
+								}else{
+									message("You don't have enough vinyl.", "Ok");
+								}
+							}else{
+								message("No negative numbers.", "No cheating");
+							}
+							readinp = "";
+						});
+					});
+				}
+			});
+			shop.addEventListener("click", function(){
+				if(items[2].quantity !== 0 && energy > 0 && hunger < 10){
+					message("You are in your shop.", "Sell records", "Leave the shop", function(){
+						read("How many records will you sell? You have "+items[2].quantity+".", "Enter amount of records", ["shop", "button_1"]);
+						waitUntil(readinp !== "", function(){
+							var rec = parseInt(readinp);
+							if(rec >= 0){
+								if(rec <= items[2].quantity){
+									items[2].quantity -= rec;
+									items[0].quantity += rec*15;
+									message("You sold records!", "OK");
+									energy -= 2;
+									hunger ++;
+								}else{
+									message("You don't have that many records.", "OK");
+								}
+							}else{
+								message("No negative numbers.", "No cheating");
+							}
+							readinp = "";
+						});
+					});
+				}else{
+					if(items[2].quantity <= 0){
+						message("You don't have any records, so you leave the shop.", "OK");
+					}else if(energy <= 0){
+						message("You're too tired to work.", "Leave the shop");
+					}else{
+						message("You're too hungry to work.", "Leave the shop");
+					}
+				}
+			});
+			mul.addEventListener("click", function(){
+				if(this.active === "yes"){
+					message("You can buy things here.<br><button onclick = \"buy(3, 1, 5, ['shop_1']);\">Buy 1 vinyl for $5</button><br><button onclick = \"buy(3, 10, 50, ['shop_1']);\">Buy 10 vinyl for $50</button><br><button onclick = \"buy(3, 100, 500, ['shop_1']);\">Buy 100 vinyl for $500</button><br><button onclick = \"buy(4, 1, 2, ['shop_1']);\">Buy 1 master tape for $2</button><br><button onclick = \"buy(4, 10, 20, ['shop_1']);\">Buy 10 master tapes for $20</button><br><button onclick = \"buy(4, 100, 200, ['shop_1']);\">Buy 100 master tapes for $200</button><hr><button onclick = \"buy(1, 2, 1, ['shop_1']);\">Buy 2 food for $1</button><button onclick = \"buy(1, 10, 5, ['shop_1']);\">Buy 10 food for $5</button><button onclick = \"buy(1, 100, 50, ['shop_1']);\">Buy 100 food for $50</button>", "Leave the store");
+				}
+				else{
+					message("The store is being repaired, so you can't go inside.", "Ok");
+				}
+			});
+			restaurant.addEventListener("click", function(){
+				if(restaurant.getAttribute("owned") === "no"){
+					if(hunger <= 3 && items[0].quantity < 250){
+						message("You aren't hungry anymore.", "Leave the restaurant");
+					}else{
+						if(items[0].quantity >= 250){
+							message("You have enough money to buy the restaurant!", "Buy it for $250", "Not yet", function(){
+								restaurant.setAttribute("owned", "yes");
+								items[0].quantity -= 250;
+								hide(byId("popup-screen"));
+							}, function(){
+								if(hunger > 3){
+									message("Time to eat.", "Eat food", "Leave without eating", function(){
+										message("Here is the menu:<br><button onclick = \"eat(10, 1, ['restaurant']);\">Burger: 1000 Calories, $10</button><br><button onclick = \"eat(5, 0, ['restaurant'], 'Yuck, yuck, give me my money back!', 'No money back :(');\">Fatman Shake: 0 Calories, $5</button><br><button onclick = \"eat(40, 4, ['restaurant']);\">Steak: 4000 Calories, $40</button>", "Leave");
+									});
+								}else{
+									message("You leave the restaurant.", "Close");
+								}
+							});
+						}
+						else{
+							message("Time to eat.", "Eat food", "Leave without eating", function(){
+								message("Here is the menu:<br><button onclick = \"eat(10, 1, ['restaurant']);\">Burger: 1000 Calories, $10</button><br><button onclick = \"eat(5, 0, ['restaurant'], 'Yuck, yuck, give me my money back!', 'No money back :(');\">Fatman Shake: 0 Calories, $5</button><br><button onclick = \"eat(40, 40, ['restaurant']);\">Steak: 4000 Calories, $40</button>", "Leave");
+							});
+						}
+					}
+				}else{
+					message("You own this restaurant.", "Leave");
+				}
+				console.info(restaurant.getAttribute("owned"));
+			});
+			tower.addEventListener("click", function(){
+				if(items[0].quantity <= 750 || tower.getAttribute("owned") == "yes"){
+					if(!clockBroken){
+						if(!cavesFound){
+							if(hour*100%60 < 10){
+								message("It's "+Math.round(hour)%12+":0"+Math.round(hour*100%60), "Go outside", "Descend the stairs", function(){hide(byId("popup-screen"));}, function(){
+									message("You descend the stairs, and find an underground cave system!", "OK");
+									caves.classList.remove("hidden");
+									byId("barrels").classList.remove("hidden");
+									cavesFound = true;
+								});
+							}else{
+								message("It's "+Math.round(hour)%12+":"+Math.round(hour*100%60), "Go outside", "Descend the stairs", function(){hide(byId("popup-screen"));}, function(){
+									message("You descend the stairs, and find an underground cave system!", "OK");
+									caves.classList.remove("hidden");
+									byId("barrels").classList.remove("hidden");
+									cavesFound = true;
+								});
+							}
+						}else{
+							if(hour*100%60 < 10){
+								message("It's "+Math.round(hour)%12+":0"+Math.round(hour*100%60), "Go outside");
+							}else{
+								message("It's "+Math.round(hour)%12+":"+Math.round(hour*100%60), "Go outside");
+							}
+						}
+					}else{
+						if(items[6].quantity <= 50){
+							message("The clock is broken.", "Leave");
+						}else{
+							message("The clock is broken.", "Fix it", "Leave", function(){
+								hide(byId("popup-screen"));
+								clockBroken = false;
+								items[6].quantity -= 50;
+							});
+						}
+					}
+				}else{
+					message("You now have enough money to buy the tower ($750)", "Buy it", "Not now", function(){
+						tower.setAttribute("owned", "yes");
+						items[0].quantity -= 750;
+						message("Congrats!", "Yup.", null, function(){
+							if(!tower.getAttribute("owned")){
+								if(hour*100%60 < 10){
+									message("According to the clock, it's "+Math.round(hour)%12+":0"+Math.round(hour*100%60), "Go outside");
+								}else{
+									message("According to the clock, it's "+Math.round(hour)%12+":"+Math.round(hour*100%60), "Go outside");
+								}
+							}else{
+								if(hour*100%60 < 10){
+									message("It's "+Math.round(hour)%12+":0"+Math.round(hour*100%60), "Go outside", "Descend the stairs", function(){hide(byId("popup-screen"));}, function(){
+										message("You descend the stairs, and find an underground cave system!", "OK");
+										caves.classList.remove("hidden");
+										barrels.classList.remove("hidden");
+										cavesFound = true;
+									});
+								}else{
+									message("It's "+Math.round(hour)%12+":"+Math.round(hour*100%60), "Go outside", "Descend the stairs", function(){hide(byId("popup-screen"));}, function(){
+										message("You descend the stairs, and find an underground cave system!", "OK");
+										caves.classList.remove("hidden");
+										barrels.classList.remove("hidden");
+										cavesFound = true;
+									});
+								}
+							}
+						});
+					}, function(){
+						message("Not yet.", "Yup", null, function(){
+							if(!tower.getAttribute("owned")){
+								if(hour*100%60 < 10){
+									message("According to the clock, it's "+Math.round(hour)%12+":0"+Math.round(hour*100%60), "Go outside");
+								}else{
+									message("According to the clock, it's "+Math.round(hour)%12+":"+Math.round(hour*100%60), "Go outside");
+								}
+							}else{
+								if(hour*100%60 < 10){
+									message("It's "+Math.round(hour)%12+":0"+Math.round(hour*100%60), "Go outside");
+								}else{
+									message("It's "+Math.round(hour)%12+":"+Math.round(hour*100%60), "Go outside");
+								}
+							}
+						});
+					});
+				}
+			});
+			clock.addEventListener("click", function(){
+				message("The clock has a small cache of items behind it.", "Take the items", "Do not take the items");
+			});
+			byId("cloudII").addEventListener("click", function(){
+				if(cloudFallen){
+					message("It's a cloud.", "Oh! I was unaware!");
+				}else{
+					message("You look at the cloud. A few things fall down from it.", "Cool!", null, function(){
+					    hide(byId("popup-screen"));
+						items[0].quantity += 500;
+						items[1].quantity +=  10;
+						items[3].quantity +=  60;
+						items[4].quantity +=  30;
+						cloudFallen = true;
+					});
+				}
+			});
+			inlink.addEventListener("click", function(){
+				if(inlink.innerHTML === "Show Inventory"){
+					show(byId("idisp"));
+					inlink.innerHTML = "Hide Inventory";
+				}else{
+					hide(byId("idisp"));
+					inlink.innerHTML = "Show Inventory";
+				}
+			});
+			barrels.addEventListener("click", function(){
+				if(barrelFuel >= 50){
+					if(!carHad || items[5].quantity !== 0){
+						message("The barrels contain fuel.", "Close");
+					}else{
+						message("The barrels contain fuel.", "Put some in the car", "Not now", function(){
+							items[5].quantity += 50;
+							barrelFuel -= 50;
+							message("The car now has fuel.", "Close");
+						});
+					}
+				}else{
+					message("The barrels are empty.", "Close");
+				}
+				garage.classList.remove("hidden");
+			});
+			garage.addEventListener("click", function(){
+				if(!carHad){
+					read("Enter the passcode:", "Enter", ["garage"]);
+					waitUntil(readinp !== "", function(){
+						var passNum = parseInt(readinp);
+						if(passNum === codenum){
+							message("Access granted", "Go inside", null, function(){
+								carHad = true;
+								garage.click();
+							});
+						}else{
+							message("Access denied", "Leave");
+						}
+						readinp = "";
+					});
+				}else if(items[5].quantity <= 0){
+					message("In the garage there is a car, but it has no fuel.", "Leave");
+				}else{
+					if(wastesFound === false){
+						message("In the garage is a car, with fuel.", "Drive", "Leave", function(){
+							scene = "wastes";
+							wastesFound = true;
+							fuel -= 10;
+							message("You drive, and come to a flat wasteland...", "Get out of the car");
+						});
+					}else{
+						message("In the garage is a car, with fuel.", "Drive", "Leave", function(){
+							message("Where?", "The wasteland", "Past the wasteland", function(){
+								message("You go to the wasteland.", "Ok");
+								scene = "wastes";
+							}, function(){
+								message("You go past the wasteland, to an icy mountain...", "Get out of the car.");
+								scene = "slopes";
+							});
+						});
+					}
+				}
+			});
+			mine.addEventListener("click", function(){
+				if(cabin.getAttribute("owned") === "no"){
+					if(energy > 0){
+						energy -= 3;
+						message("You mine some metal.", "Mine some more!", "Leave", function(){
+							items[7].quantity += 50;
+							mine.click();
+						});
+					}else{
+						message("You're too tired to work.", "Leave");
+					}
+				}else{
+					message("In the mine, there is a small, damp tunnel leading down.<br><button onclick = \"if(items[5].quantity >= 20){rocketfound = true; scene = 'rocket'; items[5].quantity -= 20; message('You are now in a room with a rocket in it.', 'Ok');}else{message('Your torch dies, leaving you in complete darkness.', 'Walk around blindly', null, function(){hide(byId('popup-screen')); scene = 'killer';});}\">Light a torch and go into the tunnel (20 fuel)</button>", "Get metal", "Leave");
+				}
+			});
+			houseII.addEventListener("click", function(){
+				if(energy <= 0){
+					message("You ask to rest at the house, and they let you. You fall asleep...", "Wake up");
+					scene = "home";
+					energy = 50;
+				}else{
+					message("What do you want?", "Money", "Nothing", function(){
+						message("We don't give away free money.", "Leave");
+					});
+				}
+			});
+			garageII.addEventListener("click", function(){
+				message("Your car is parked here.", "Drive back", "Leave", function(){
+					hide(byId("popup-screen"));
+					scene = "home";
+				});
+			});
+			cabin.addEventListener("click", function(){
+				if(energy <= 0){
+					message("\"What do you want?\"", "\"I want to rest\"", "\"I want to buy your house\"", function(){
+						if(items[0].quantity >= 20){
+							message("\"Sure, but only for a price.\"", "Pay $20", "\"No way\"", function(){
+								items[0].quantity -= 20;
+								energy = 50;
+								scene = "home";
+								hide(byId("popup-screen"));
+							});
+						}else{
+							message("You have to pay $20, but you don't have that much money.", "Leave");
+						}
+					}, function(){
+						if(items[0].quantity >= 5000){
+							message("\"Sure thing!\"", "Pay $5000", "\"Never mind\"", function(){
+								items[0].quantity -= 5000;
+								cabin.setAttribute("owned", "yes");
+								hide(byId("popup-screen"));
+							});
+						}
+					});
+				}else if(items[0].quantity >= 5000 && cabin.getAttribute("owned") === "no"){
+					message("\"What do you want?\"", "Your house", "Nothing", function(){
+						items[0].quantity -= 5000;
+						cabin.setAttribute("owned", "yes");
+						hide(byId("popup-screen"));
+					});
+				}else{
+					message("\"What do you want?\"", "Food", "Nothing", function(){
+						message("\"Fine.\"", "Take the food");
+						items[1].quantity += 10;
+					});
+				}
+			});
+			fuelpump.addEventListener("click", function(){
+				if(energy > 3){
+					if(items[0].quantity >= 50){
+						message("\"Please insert coins.\"", "Put in $50", "Leave the machine", function(){
+							items[0].quantity -= 50;
+							items[5].quantity += 10;
+							energy -= 2;
+							message("The machine gives you 10 fuel.", "Stay at the machine", "Leave the machine", function(){
+								fuelpump.click();
+							});
+						});
+					}else{
+						message("\"Please insert coins.\"<br><i>Too bad you don't have enough money.</i>", "Leave the machine");
+					}
+				}else{
+					message("You manage to drag yourself to the machine, but you are too tired to do anything.", "Drag yourself away");
+				}
+			});
+			passage.addEventListener("click", function(){
+				message("The passage leads out of the mine.", "Go through the passage", "Don't go", function(){
+					scene = "wastes";
+					hide(byId("popup-screen"));
+				});
+			});
+			machine.addEventListener("click", function(){
+				if(interiormade){
+					message("Launch?", "Yes", "No", function(){
+						scene = "launch";
+						hide(byId("popup-screen"));
+					});
+				}else{
+					message("The interior of the rocket is broken.", "Fix it", "Leave", function(){
+						message("In order to repair the rocket, you need: <br/><span id = \"metal_num\"></span> metal <input type = \"text\" id = \"metal_inp\"/>, <br/><span id = \"fuel_num\"></span> fuel tanks <input type = \"text\" id = \"fuel_inp\"/>, <br/>\"<span id = \"air_num\"></span> air tanks <input type = \"text\" id = \"air_inp\"/>, <br/><span id = \"elec_num\"></span> electrical parts.  <input type = \"text\" id = \"elec_inp\"/> <br/> <button id = \"repair_btn\" onclick = \"var mn = byId('');\">Repair</button>");
+					});
+				}
+			});
+			function update(){
+				if(byId("popup-screen").style.display == "none"){
+					inmessage = false;
+				}else{
+					inmessage = true;
+				}
+				if(codenum === 10000){
+					codenum = Math.round(Math.random()*1000);
+				}
+				if(hunger >= 10){
+					byId("restaurant").classList.remove("hidden");
+				}
+				if(restaurant.getAttribute("owned") === "yes" && Math.round(Math.random()) === 0 && items[1].quantity > 0){
+					items[0].quantity ++;
+					items[1].quantity --;
+					if(hunger !== 0){
+						hunger = 0;
+					}
+					console.log(items[0].quantity);
+					console.log(items[1].quantity);
+				}
+				if(restaurant.getAttribute("owned") === "yes"){
+					byId("r-owned").style.visibility = "initial";
+					byId("tower").classList.remove("hidden");
+				}
+				if(tower.getAttribute("owned") == "yes" && clockBroken == false && scene === "home"){
+					byId("t-owned").style.visibility = "initial";
+					eventsOn = true;
+				}
+				if(cabin.getAttribute("owned") === "yes"){
+					show(fuelpump);
+				}
+				if(clockBroken || scene !== "home"){
+					eventsOn = false;
+				}
+				if(eventsOn && !inmessage){
+					if(eventNum === 0){
+						doEvent();
+					}else{
+						eventNum --;
+					}
+				}
+				hour = Math.abs((50-energy)/50*12)+7;
+				var inventoryText = "Inventory items:";
+				for(var i in items){
+					if(items[i].quantity !== 0 || items[i].name === "Money"){
+						inventoryText += "<br>";
+						inventoryText += items[i].name;
+						inventoryText += ": ";
+						inventoryText += items[i].quantity;
+					}
+				}
+				if(hunger > 10){
+					hunger = 10;
+				}
+				if(hunger < 0){
+					hunger = 0;
+				}
+				if(energy > 50){
+					energy = 50;
+				}
+				if(energy < 0){
+					energy = 0;
+				}
+				byId("idisp").innerHTML = inventoryText;
+				byId("hbar").style.width = hunger*25+"px";
+				byId("hbar2").style.width = (10-hunger)*25+"px";
+				byId("ebar").style.width = energy*5+"px";
+				byId("ebar2").style.width = (50-energy)*5+"px";
+				//timer
+				timer ++;
+				if(timer === 100){
+					byId("shop_1").classList.remove("hidden");
+				}
+				if(items[2].quantity <= 2){
+					byId("shop_1").active = "yes";
+					byId("shop_1").title = "The multi-purpouse store is open";
+					byId("shop_1").innerHTML = " ____________\n\
+|            |\n\
+|            |\n\
+|    ___     |\n\
+|   [   ]    |";
+				}
+				for(var i in scenes){
+					hide(byId(scenes[i]));
+				}
+				show(byId(scene));
+			};
+			window.setInterval(update, 50);
+		</script>
+	</body>
+</html>
